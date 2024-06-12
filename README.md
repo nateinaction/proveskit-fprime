@@ -5,11 +5,12 @@
 You must already have python 3.10+ installed.
 
 1. Clone this repo and cd into the directory
-1. Download fprime `git submodule update --init`
+1. Download fprime `git submodule update --init -r`
 1. Setup virtual env `python -m venv fprime-venv`
+1. Activate virtual env `source fprime-venv/bin/activate`
+1. Install fprime requirements `pip install -r fprime/requirements.txt`
 1. Install the arduino CLI into the venv `curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=$VIRTUAL_ENV/bin sh`
 1. Install the arduino CLI wrapper package into the venv `pip install arduino-cli-cmake-wrapper`
-1. Install fprime requirements `pip install -r fprime/requirements.txt`
 1. Initialize the arduino CLI `arduino-cli config init`
 1. Add the adafruit board manager url
 ```
