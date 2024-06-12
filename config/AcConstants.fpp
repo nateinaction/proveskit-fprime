@@ -45,9 +45,6 @@ constant DpManagerNumPorts = 5
 @ Size of processing port array for DpWriter
 constant DpWriterNumProcPorts = 5
 
-@ The size of a file name string
-constant FileNameStringSize = 256
-
 # ----------------------------------------------------------------------
 # Hub connections. Connections on all deployments should mirror these settings.
 # ----------------------------------------------------------------------

@@ -12,42 +12,24 @@
 #ifndef FPCONFIG_H_
 #define FPCONFIG_H_
 
-// ----------------------------------------------------------------------
-// Type aliases
-// ----------------------------------------------------------------------
-
-// The type of port indices and smaller sizes internal to the software
 typedef PlatformIndexType FwIndexType;
 #define PRI_FwIndexType PRI_PlatformIndexType
 
-// The signed type of larger sizes internal to the software, e.g., memory buffer sizes,
-// file sizes
-typedef PlatformSignedSizeType FwSignedSizeType;
-#define PRI_FwSignedSizeType PRI_PlatformSignedSizeType
-
-// The unsigned type of larger sizes internal to the software, e.g., memory buffer sizes,
-// file sizes
 typedef PlatformSizeType FwSizeType;
 #define PRI_FwSizeType PRI_PlatformSizeType
 
-// The type of an assertion argument
 typedef PlatformAssertArgType FwAssertArgType;
 #define PRI_FwAssertArgType PRI_PlatformAssertArgType
 
-// The type of a machine integer. Ordinarily this should be int.
 typedef PlatformIntType FwNativeIntType;
 #define PRI_FwNativeIntType PRI_PlatformIntType
 
-// The type of a machine unsigned integer. Ordinarily this should be unsigned int.
 typedef PlatformUIntType FwNativeUIntType;
 #define PRI_FwNativeUIntType PRI_PlatformUIntType
 
-// The type used to serialize a size value
-typedef U16 FwSizeStoreType;
-#define PRI_FwSizeStoreType PRIu16
+typedef U16 FwBuffSizeType;
+#define PRI_FwBuffSizeType PRIu16
 
-// The type used to serialize a C++ enumeration constant
-// FPP enumerations are serialized according to their representation types
 typedef I32 FwEnumStoreType;
 #define PRI_FwEnumStoreType PRId32
 
@@ -62,64 +44,35 @@ typedef enum {
 } TimeBase;
 #define FW_CONTEXT_DONT_CARE 0xFF  //!< Don't care value for time contexts in sequences
 
-// The type used to serialize a time base value
 typedef U16 FwTimeBaseStoreType;
 #define PRI_FwTimeBaseStoreType PRIu16
 
-// The type used to serialize a time context value
 typedef U8 FwTimeContextStoreType;
 #define PRI_FwTimeContextStoreType PRIu8
 
-// The type of a com packet descriptor
 typedef U32 FwPacketDescriptorType;
 #define PRI_FwPacketDescriptorType PRIu32
 
-// The type of a command opcode
 typedef U32 FwOpcodeType;
 #define PRI_FwOpcodeType PRIu32
 
-// The type of a telemetry channel identifier
 typedef U32 FwChanIdType;
 #define PRI_FwChanIdType PRIu32
 
-// The type of an event identifier
 typedef U32 FwEventIdType;
 #define PRI_FwEventIdType PRIu32
 
-// The type of a parameter identifier
 typedef U32 FwPrmIdType;
 #define PRI_FwPrmIdType PRIu32
 
-// The type of a telemetry packet identifier
 typedef U16 FwTlmPacketizeIdType;
 #define PRI_FwTlmPacketizeIdType PRIu16
 
-// The type of a queue priority
-typedef I32 FwQueuePriorityType;
-#define PRI_FwQueuePriorityType PRId32
-
-// The type of a data product identifier
 typedef U32 FwDpIdType;
 #define PRI_FwDpIdType PRIu32
 
-// The type of a data product priority
 typedef U32 FwDpPriorityType;
 #define PRI_FwDpPriorityType PRIu32
-
-// ----------------------------------------------------------------------
-// Derived type aliases
-// By default, these types are aliases of types defined above
-// If necessary, you can change these definitions
-// In most cases, the defaults should work
-// ----------------------------------------------------------------------
-
-// The type of a queue size
-typedef FwIndexType FwQueueSizeType;
-#define PRI_FwQueueSizeType PRI_FwIndexType
-
-// ----------------------------------------------------------------------
-// Configuration switches
-// ----------------------------------------------------------------------
 
 // Boolean values for serialization
 #ifndef FW_SERIALIZE_TRUE_VALUE
@@ -227,8 +180,8 @@ typedef FwIndexType FwQueueSizeType;
 
 // The size of the object name stored in the object base class. Larger names will be truncated.
 #if FW_OBJECT_NAMES
-#ifndef FW_OBJ_NAME_BUFFER_SIZE
-#define FW_OBJ_NAME_BUFFER_SIZE \
+#ifndef FW_OBJ_NAME_MAX_SIZE
+#define FW_OBJ_NAME_MAX_SIZE \
     80  //!< Size of object name (if object names enabled). AC Limits to 80, truncation occurs above 80.
 #endif
 #endif
@@ -247,7 +200,7 @@ typedef FwIndexType FwQueueSizeType;
 #define FW_OBJ_SIMPLE_REG_ENTRIES 500  //!< Number of objects stored in simple object registry
 #endif
 // When dumping the contents of the registry, this specifies the size of the buffer used to store object names. Should
-// be >= FW_OBJ_NAME_BUFFER_SIZE.
+// be >= FW_OBJ_NAME_MAX_SIZE.
 #ifndef FW_OBJ_SIMPLE_REG_BUFF_SIZE
 #define FW_OBJ_SIMPLE_REG_BUFF_SIZE 255  //!< Size of object registry dump string
 #endif
@@ -261,13 +214,13 @@ typedef FwIndexType FwQueueSizeType;
 #endif
 
 // Specifies the size of the string holding the queue name for queues
-#ifndef FW_QUEUE_NAME_BUFFER_SIZE
-#define FW_QUEUE_NAME_BUFFER_SIZE 80  //!< Max size of message queue name
+#ifndef FW_QUEUE_NAME_MAX_SIZE
+#define FW_QUEUE_NAME_MAX_SIZE 80  //!< Max size of message queue name
 #endif
 
 // Specifies the size of the string holding the task name for active components and tasks
-#ifndef FW_TASK_NAME_BUFFER_SIZE
-#define FW_TASK_NAME_BUFFER_SIZE 80  //!< Max size of task name
+#ifndef FW_TASK_NAME_MAX_SIZE
+#define FW_TASK_NAME_MAX_SIZE 80  //!< Max size of task name
 #endif
 
 // Specifies the size of the buffer that contains a communications packet.
@@ -384,31 +337,14 @@ typedef FwIndexType FwQueueSizeType;
 #ifndef FW_USE_TIME_CONTEXT
 #define FW_USE_TIME_CONTEXT 1  //!< Whether or not to serialize the time context
 #endif
-
-// Configuration for Fw::String
+//
+// These defines used for the FilepathCharString type
 
 #ifndef FW_FIXED_LENGTH_STRING_SIZE
-#define FW_FIXED_LENGTH_STRING_SIZE 256  //!< Character array size for Fw::String
-#endif
-
-// OS configuration
-
-#ifndef FW_HANDLE_MAX_SIZE
-#define FW_HANDLE_MAX_SIZE 24  //!< Maximum size of a handle for OS resources (files, queues, locks, etc.)
-#endif
-
-#ifndef FW_HANDLE_ALIGNMENT
-#define FW_HANDLE_ALIGNMENT 16  //!< Alignment of handle storage
-#endif
-
-#ifndef FW_FILE_CHUNK_SIZE
-#define FW_FILE_CHUNK_SIZE 512  //!< Chunk size for working with files
+#define FW_FIXED_LENGTH_STRING_SIZE 256  //!< Character array size for the filepath character type
 #endif
 
 // *** NOTE configuration checks are in Fw/Cfg/ConfigCheck.cpp in order to have
 // the type definitions in Fw/Types/BasicTypes available.
 
-// DO NOT TOUCH.  These types are specified for backwards naming compatibility.
-typedef FwSizeStoreType FwBuffSizeType;
-#define PRI_FwBuffSizeType PRI_FwSizeStoreType
 #endif
